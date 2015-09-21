@@ -5,7 +5,7 @@
     Description: A secure global end-to-end content delivery network.
     Author: Belkin Capital Ltd
     Author URI: https://belkincapital.com/
-    Version: 1.4
+    Version: 1.4.5
     License: GNU General Public License 2.0
     License URI: http://www.gnu.org/licenses/gpl-2.0.txt
     
@@ -35,14 +35,24 @@ if ( ! defined( 'ABSPATH' ) ) die();
 error_reporting(0);
 @ini_set('display_errors', 0);
 
+/* Plugin version */
+function atmocdn_version() {
+    $plugin_data = get_plugin_data(__FILE__);
+    $plugin_version = $plugin_data['Version'];
+    return $plugin_version;
+}
+
 /** Required **/
 require_once(dirname(__FILE__)."/functions.php");
 require_once(dirname(__FILE__)."/panel.php");
 require_once(dirname(__FILE__)."/iap.php");
 
-/* Add js to header for iframe lazyload */
+/* Add js to header for lazyload */
+add_action('wp_head', 'atmocdn_wp_head');
 function atmocdn_wp_head() {
-    echo '<script src="http://atmocdn.com/assets/js/jquery.lazyload.js"></script>';
+    $cdn_vers = atmocdn_version();
+    echo "<!-- ATMOCDN v$cdn_vers :: Belkin Capital Ltd -->\n";
+    echo "<script src='http://atmocdn.com/assets/js/jquery.lazyload.js'></script>";
 }
 
 /** CDN defines **/
@@ -72,9 +82,8 @@ if ( is_multisite() ) {
       if (GLOBAL_CDN == 'true') {
           $atmocdn = array(
             "files"  => FILES_CDN,
-          );
+          );         
           add_action('template_redirect', 'atmo_cdn');
-          add_action('wp_head', 'atmocdn_wp_head');
       }
     }
   }
@@ -83,9 +92,8 @@ if ( is_multisite() ) {
     if (GLOBAL_CDN == 'true') {
         $atmocdn = array(
           "files"  => FILES_CDN,
-        );
+        );         
         add_action('template_redirect', 'atmo_cdn');
-        add_action('wp_head', 'atmocdn_wp_head');
     }
   }
 }
@@ -123,13 +131,19 @@ function atmo_cdn_path($buffer) {
         if (stristr(isset($buffer[$i]), '<!--atmocdn no-change-->')){
             @$buffer[$i]=(str_replace("<!--atmocdn no-change-->", " ", $buffer[$i]));
         } else {
+
+            /* Lazyload rules */
+            @$buffer[$i]=(str_replace("<iframe src=", "<iframe data-src=", $buffer[$i]));
+            if ( !is_home() || !is_front_page() ) {
+                @$buffer[$i]=(str_replace("<img src=", "<img data-src=", $buffer[$i]));
+            }
+     
             /* Rewrite rules */
             @$buffer[$i]=(str_replace($site_url, "$cdn_url/$sites_url", $buffer[$i]));
             @$buffer[$i]=(str_replace($include_url, "$cdn_url/$includes_url", $buffer[$i]));
             @$buffer[$i]=(str_replace($plugin_url, "$cdn_url/$plugins_url", $buffer[$i]));
             @$buffer[$i]=(str_replace($theme_url, "$cdn_url/$themes_url", $buffer[$i]));
-            /* Lazyload rules */
-            @$buffer[$i]=(str_replace("<iframe src=", "<iframe data-src=", $buffer[$i]));
+
         }
         @$buffer_out.=$buffer[$i];
     }
@@ -137,7 +151,7 @@ function atmo_cdn_path($buffer) {
     $final=strlen($buffer_out);
     $savings=($initial-$final)/$initial*100;
     $savings=round($savings, 2);
-    $buffer_out.=" ";
+    $buffer_out.='';
     return $buffer_out;
 }
 
