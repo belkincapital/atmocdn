@@ -5,7 +5,7 @@
     Description: A secure global end-to-end content delivery network.
     Author: Belkin Capital Ltd
     Author URI: https://belkincapital.com/
-    Version: 1.3
+    Version: 1.4
     License: GNU General Public License 2.0
     License URI: http://www.gnu.org/licenses/gpl-2.0.txt
     
@@ -40,6 +40,11 @@ require_once(dirname(__FILE__)."/functions.php");
 require_once(dirname(__FILE__)."/panel.php");
 require_once(dirname(__FILE__)."/iap.php");
 
+/* Add js to header for iframe lazyload */
+function atmocdn_wp_head() {
+    echo '<script src="http://atmocdn.com/assets/js/jquery.lazyload.js"></script>';
+}
+
 /** CDN defines **/
 if ( is_multisite() ) {
   if ( ! get_option('atmo_cdn_iap', '') ) {
@@ -69,6 +74,7 @@ if ( is_multisite() ) {
             "files"  => FILES_CDN,
           );
           add_action('template_redirect', 'atmo_cdn');
+          add_action('wp_head', 'atmocdn_wp_head');
       }
     }
   }
@@ -79,6 +85,7 @@ if ( is_multisite() ) {
           "files"  => FILES_CDN,
         );
         add_action('template_redirect', 'atmo_cdn');
+        add_action('wp_head', 'atmocdn_wp_head');
     }
   }
 }
@@ -121,6 +128,8 @@ function atmo_cdn_path($buffer) {
             @$buffer[$i]=(str_replace($include_url, "$cdn_url/$includes_url", $buffer[$i]));
             @$buffer[$i]=(str_replace($plugin_url, "$cdn_url/$plugins_url", $buffer[$i]));
             @$buffer[$i]=(str_replace($theme_url, "$cdn_url/$themes_url", $buffer[$i]));
+            /* Lazyload rules */
+            @$buffer[$i]=(str_replace("<iframe src=", "<iframe data-src=", $buffer[$i]));
         }
         @$buffer_out.=$buffer[$i];
     }
