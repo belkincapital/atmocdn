@@ -1,3 +1,6 @@
+= 1.4
+Now lazyloading all iframes on the website to help improve pagespeed. Most social widgets or Youtube videos are iframes, so this typically is a dramatic improvement.
+
 = 1.3
 Fixed compatibility issue with WPtouch. We now disable the CDN only when viewing the site from a mobile device and when WPtouch theme is showing.
 
