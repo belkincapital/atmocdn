@@ -5,7 +5,7 @@
     Description: A secure global end-to-end content delivery network.
     Author: Belkin Capital Ltd
     Author URI: https://belkincapital.com/
-    Version: 1.4.5
+    Version: 1.4.6
     License: GNU General Public License 2.0
     License URI: http://www.gnu.org/licenses/gpl-2.0.txt
     
@@ -52,7 +52,7 @@ add_action('wp_head', 'atmocdn_wp_head');
 function atmocdn_wp_head() {
     $cdn_vers = atmocdn_version();
     echo "<!-- ATMOCDN v$cdn_vers :: Belkin Capital Ltd -->\n";
-    echo "<script src='http://atmocdn.com/assets/js/jquery.lazyload.js'></script>";
+    echo "<script src='http://assets.atmocdn.com/js/jquery.lazyload.js'></script>";
 }
 
 /** CDN defines **/
