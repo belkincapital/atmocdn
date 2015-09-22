@@ -1,3 +1,6 @@
+= 1.5
+Fixed issue with Lazyload being injected into the frontend header even if the cdn is disabled or not yet setup. This addresses both Multisite and standard WordPress.org sites.
+
 = 1.4.9
 Added additional Lazyload rules
 

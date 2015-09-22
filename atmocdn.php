@@ -5,7 +5,7 @@
     Description: A secure global end-to-end content delivery network.
     Author: Belkin Capital Ltd
     Author URI: https://belkincapital.com/
-    Version: 1.4.9
+    Version: 1.5
     License: GNU General Public License 2.0
     License URI: http://www.gnu.org/licenses/gpl-2.0.txt
     
@@ -48,10 +48,24 @@ require_once(dirname(__FILE__)."/panel.php");
 require_once(dirname(__FILE__)."/iap.php");
 
 /* Add js to header for lazyload */
-add_action('wp_enqueue_scripts', 'atmocdn_add_javascript');
-function atmocdn_add_javascript() {
-    wp_enqueue_script('jquery');    
-    wp_enqueue_script('atmocdn-lazyloader', "http://assets.atmocdn.com/js/jquery.lazyload.js", array('jquery'));
+if ( is_multisite() ) {
+  if ( ! get_option('atmo_cdn_iap', '') ) {
+    if ( get_blog_option('1', 'atmo_cdn_one', '') ) {
+        add_action('wp_enqueue_scripts', 'atmocdn_add_javascript');
+        function atmocdn_add_javascript() {
+            wp_enqueue_script('jquery');    
+            wp_enqueue_script('atmocdn-lazyloader', "http://assets.atmocdn.com/js/jquery.lazyload.js", array('jquery'));
+        }
+    }
+  }
+} else {
+  if ( get_option('atmo_cdn_one', '') ) {    
+        add_action('wp_enqueue_scripts', 'atmocdn_add_javascript');
+        function atmocdn_add_javascript() {
+            wp_enqueue_script('jquery');    
+            wp_enqueue_script('atmocdn-lazyloader', "http://assets.atmocdn.com/js/jquery.lazyload.js", array('jquery'));
+        }
+  }
 }
 
 /** CDN defines **/
