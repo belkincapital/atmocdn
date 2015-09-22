@@ -1,3 +1,9 @@
+= 1.6
+Added ability to include custom lazyload rules for sites. Create a file within the plugin root called custom-lazyload.php and then add your rules. A few examples of some rules are:
+@$buffer[$i]=(str_replace("<img src=", "<img data-src=", $buffer[$i]));
+@$buffer[$i]=(str_replace('<img class="aligncenter" src=', '<img class="aligncenter" data-src=', $buffer[$i]));
+@$buffer[$i]=(str_replace('alt="" src=', 'alt="image" data-src=', $buffer[$i]));
+
 = 1.5
 Fixed issue with Lazyload being injected into the frontend header even if the cdn is disabled or not yet setup. This addresses both Multisite and standard WordPress.org sites.
 
