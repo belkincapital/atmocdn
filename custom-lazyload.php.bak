@@ -1,0 +1,18 @@
+<?php
+/**
+ * Lazyload Rewrite Rules
+ * This file contains custom site rules for PSMU.
+ */
+
+            /* Load everywhere except homepage */
+            if ( !is_home() || !is_front_page() ) {
+                @$buffer[$i]=(str_replace("<img src=", "<img data-src=", $buffer[$i]));
+                @$buffer[$i]=(str_replace('id="doc_51038" src=', 'id="doc_51038" data-src=', $buffer[$i]));
+                @$buffer[$i]=(str_replace('id="doc_25277" src=', 'id="doc_25277" data-src=', $buffer[$i]));
+                @$buffer[$i]=(str_replace('class="scribd_iframe_embed" src=', 'class="scribd_iframe_embed" data-src=', $buffer[$i]));
+                @$buffer[$i]=(str_replace('title="Green check" src=', 'title="Green check" data-src=', $buffer[$i]));
+                @$buffer[$i]=(str_replace('<img class="aligncenter" src=', '<img class="aligncenter" data-src=', $buffer[$i]));
+                @$buffer[$i]=(str_replace('alt="" src=', 'alt="image" data-src=', $buffer[$i]));
+            }
+
+?>
