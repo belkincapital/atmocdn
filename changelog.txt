@@ -1,3 +1,6 @@
+= 1.4.7
+Fixed the way javascript was injected into the frontend header and replaced it with the proper enqueue script.
+
 = 1.4.6
 Changed lazyload assets source location.
 
