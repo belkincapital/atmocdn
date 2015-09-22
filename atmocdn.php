@@ -5,7 +5,7 @@
     Description: A secure global end-to-end content delivery network.
     Author: Belkin Capital Ltd
     Author URI: https://belkincapital.com/
-    Version: 1.4.7
+    Version: 1.4.9
     License: GNU General Public License 2.0
     License URI: http://www.gnu.org/licenses/gpl-2.0.txt
     
@@ -133,8 +133,15 @@ function atmo_cdn_path($buffer) {
 
             /* Lazyload rules */
             @$buffer[$i]=(str_replace("<iframe src=", "<iframe data-src=", $buffer[$i]));
+
             if ( !is_home() || !is_front_page() ) {
                 @$buffer[$i]=(str_replace("<img src=", "<img data-src=", $buffer[$i]));
+                @$buffer[$i]=(str_replace('id="doc_51038" src=', 'id="doc_51038" data-src=', $buffer[$i]));
+                @$buffer[$i]=(str_replace('id="doc_25277" src=', 'id="doc_25277" data-src=', $buffer[$i]));
+                @$buffer[$i]=(str_replace('class="scribd_iframe_embed" src=', 'class="scribd_iframe_embed" data-src=', $buffer[$i]));
+                @$buffer[$i]=(str_replace('title="Green check" src=', 'title="Green check" data-src=', $buffer[$i]));
+                @$buffer[$i]=(str_replace('<img class="aligncenter" src=', '<img class="aligncenter" data-src=', $buffer[$i]));
+                @$buffer[$i]=(str_replace('alt="" src=', 'alt="image" data-src=', $buffer[$i]));
             }
      
             /* Rewrite rules */
