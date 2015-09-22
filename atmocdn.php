@@ -5,7 +5,7 @@
     Description: A secure global end-to-end content delivery network.
     Author: Belkin Capital Ltd
     Author URI: https://belkincapital.com/
-    Version: 1.6
+    Version: 1.7
     License: GNU General Public License 2.0
     License URI: http://www.gnu.org/licenses/gpl-2.0.txt
     
@@ -29,7 +29,7 @@
 
 
 /** exit if accessed directly **/
-if ( ! defined( 'ABSPATH' ) ) die();
+if ( !defined( 'ABSPATH' ) ) die();
 
 /** Error Reporting for Production **/
 error_reporting(0);
@@ -48,67 +48,51 @@ require_once(dirname(__FILE__)."/panel.php");
 require_once(dirname(__FILE__)."/iap.php");
 
 /* Add js to header for lazyload */
-if ( is_multisite() ) {
-  if ( ! get_option('atmo_cdn_iap', '') ) {
-    if ( get_blog_option('1', 'atmo_cdn_one', '') ) {
+if ( is_multisite() && !get_option('atmo_cdn_iap', '') && get_blog_option('1', 'atmo_cdn_one', '') ) {
+        add_action('wp_enqueue_scripts', 'atmocdn_add_javascript');
+        function atmocdn_add_javascript() {
+            wp_enqueue_script('jquery');    
+            wp_enqueue_script('atmocdn-lazyloader', "http://assets.atmocdn.com/js/jquery.lazyload.js", array('jquery'));
+        }
+} else {
+    if ( get_option('atmo_cdn_one', '') ) {    
         add_action('wp_enqueue_scripts', 'atmocdn_add_javascript');
         function atmocdn_add_javascript() {
             wp_enqueue_script('jquery');    
             wp_enqueue_script('atmocdn-lazyloader', "http://assets.atmocdn.com/js/jquery.lazyload.js", array('jquery'));
         }
     }
-  }
-} else {
-  if ( get_option('atmo_cdn_one', '') ) {    
-        add_action('wp_enqueue_scripts', 'atmocdn_add_javascript');
-        function atmocdn_add_javascript() {
-            wp_enqueue_script('jquery');    
-            wp_enqueue_script('atmocdn-lazyloader', "http://assets.atmocdn.com/js/jquery.lazyload.js", array('jquery'));
-        }
-  }
 }
 
 /** CDN defines **/
-if ( is_multisite() ) {
-  if ( ! get_option('atmo_cdn_iap', '') ) {
-    if ( get_blog_option('1', 'atmo_cdn_one', '') ) {
+if ( is_multisite() && !get_option('atmo_cdn_iap', '') && get_blog_option('1', 'atmo_cdn_one', '') ) {
       define('GLOBAL_CDN', 'true');
       $vcdn_var = get_blog_option('1', 'atmo_cdn_two', '');
       define('FILES_CDN', $vcdn_var); /* Set Addon Domain to /public_html */
-    }
-  }
 } else {
-  if ( get_option('atmo_cdn_one', '') ) {    
-    define('GLOBAL_CDN', 'true');
-    $vcdn_var = get_option('atmo_cdn_two', '');
-    define('FILES_CDN', $vcdn_var); /* Set Addon Domain to /public_html */
-  }
+    if ( get_option('atmo_cdn_one', '') ) {    
+        define('GLOBAL_CDN', 'true');
+        $vcdn_var = get_option('atmo_cdn_two', '');
+        define('FILES_CDN', $vcdn_var); /* Set Addon Domain to /public_html */
+    }
 }
 
 /**
  * Start frontend CDN
  * Since 1.0
  */
-if ( is_multisite() ) {
-  if ( ! get_option('atmo_cdn_iap', '') ) {
-    if ( get_blog_option('1', 'atmo_cdn_one', '') ) {
-      if (GLOBAL_CDN == 'true') {
+if ( is_multisite() && !get_option('atmo_cdn_iap', '') && get_blog_option('1', 'atmo_cdn_one', '') && GLOBAL_CDN == 'true') {
           $atmocdn = array(
             "files"  => FILES_CDN,
           );         
           add_action('template_redirect', 'atmo_cdn');
-      }
-    }
-  }
 } else {
-  if ( get_option('atmo_cdn_one', '') ) {
-    if (GLOBAL_CDN == 'true') {
+    if ( get_option('atmo_cdn_one', '') && GLOBAL_CDN == 'true') {
         $atmocdn = array(
           "files"  => FILES_CDN,
         );         
         add_action('template_redirect', 'atmo_cdn');
     }
-  }
 }
 
 /* Rewrite url html output
